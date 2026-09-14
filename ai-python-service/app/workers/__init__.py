@@ -1,0 +1,1 @@
+"""RabbitMQ asynchronous background workers"""

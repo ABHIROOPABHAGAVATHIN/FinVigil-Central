@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: finvigil-backend-test
+  datasource:
+    url: jdbc:h2:mem:finvigildb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    open-in-view: false
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+
+app:
+  jwt:
+    secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+    expiration-ms: 86400000
+  ai-service:
+    url: http://localhost:8000
+  aml:
+    large-transaction-threshold: 50000.0
+    velocity-limit: 5
+    velocity-window-seconds: 60
+    rule-weight: 0.4
+    ml-weight: 0.6

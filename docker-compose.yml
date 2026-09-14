@@ -1,0 +1,70 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: finvigil-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME:-finvigil_db}
+      POSTGRES_USER: ${DB_USERNAME:-finvigil_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-finvigil_secure_password}
+    ports:
+      - "${DB_PORT:-5433}:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/01-init-db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-finvigil_user} -d ${DB_NAME:-finvigil_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - finvigil-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: finvigil-redis
+    restart: always
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - finvigil-network
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: finvigil-rabbitmq
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-guest}
+    ports:
+      - "${RABBITMQ_PORT:-5672}:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    networks:
+      - finvigil-network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  rabbitmq_data:
+    driver: local
+
+networks:
+  finvigil-network:
+    driver: bridge

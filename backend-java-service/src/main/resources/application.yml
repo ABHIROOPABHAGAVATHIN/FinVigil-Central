@@ -1,0 +1,58 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: finvigil-backend
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/finvigil_db}
+    username: ${DB_USERNAME:finvigil_user}
+    password: ${DB_PASSWORD:finvigil_secure_password}
+
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+  ai-service:
+    url: ${AI_SERVICE_URL:http://localhost:8000}
+  aml:
+    large-transaction-threshold: ${AML_LARGE_TRANSACTION_THRESHOLD:50000.0}
+    velocity-limit: ${AML_VELOCITY_LIMIT:5}
+    velocity-window-seconds: ${AML_VELOCITY_WINDOW_SECONDS:60}
+    rule-weight: ${AML_RULE_WEIGHT:0.4}
+    ml-weight: ${AML_ML_WEIGHT:0.6}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html

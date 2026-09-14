@@ -1,0 +1,72 @@
+# Compiled Java class files
+*.class
+target/
+.mvn/
+*.jar
+*.war
+*.ear
+
+# Maven
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.next
+release.properties
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.venv/
+venv/
+ENV/
+.pytest_cache/
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+*.env.local
+*.pem
+*.key
+*.cert
+*.crt
+*.p12
+*.jks
+node_modules/
+.system_generated/
+
+# Logs
+*.log
+logs/
+
+# Trained models binary artifacts if locally overridden
+# Note: Initial baseline models may be version-controlled or generated via training scripts
