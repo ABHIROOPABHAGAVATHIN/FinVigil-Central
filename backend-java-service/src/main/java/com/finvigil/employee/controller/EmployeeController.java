@@ -12,6 +12,9 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import com.finvigil.common.enums.CustomerStatus;
+import com.finvigil.customer.dto.CustomerPageResponse;
+import com.finvigil.customer.service.CustomerService;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,9 +26,27 @@ import java.util.Map;
 public class EmployeeController {
 
     private final EmployeeAuthService employeeAuthService;
+    private final CustomerService customerService;
 
-    public EmployeeController(EmployeeAuthService employeeAuthService) {
+    public EmployeeController(EmployeeAuthService employeeAuthService, CustomerService customerService) {
         this.employeeAuthService = employeeAuthService;
+        this.customerService = customerService;
+    }
+
+    @GetMapping("/customers")
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    @SecurityRequirement(name = "BearerAuth")
+    @Operation(summary = "Employee customer directory & search", description = "Paginated directory of customers with multi-field search and status filter. Restricted to employees.")
+    public ResponseEntity<CustomerPageResponse> getCustomerDirectory(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) CustomerStatus status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "DESC") String sortDir
+    ) {
+        CustomerPageResponse response = customerService.searchCustomers(search, status, page, size, sortBy, sortDir);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/auth/login")

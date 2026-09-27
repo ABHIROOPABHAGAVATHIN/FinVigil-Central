@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 11 15 23;
+    --surface: 15 20 32;
+    --border: 34 43 64;
+  }
+
+  * {
+    border-color: #222B40;
+  }
+
+  body {
+    background-color: #0B0F17;
+    color: #F1F5F9;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Monospaced tabular numerals for financial accuracy */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Custom Financial Dark Console Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0B0F17;
+}
+::-webkit-scrollbar-thumb {
+  background: #222B40;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3B4B6E;
+}
+
+/* Subtle Risk Glows */
+.glow-risk-low {
+  box-shadow: 0 0 16px -2px rgba(16, 185, 129, 0.25);
+}
+.glow-risk-medium {
+  box-shadow: 0 0 16px -2px rgba(245, 158, 11, 0.25);
+}
+.glow-risk-high {
+  box-shadow: 0 0 16px -2px rgba(239, 68, 68, 0.25);
+}
+.glow-brand {
+  box-shadow: 0 0 20px -3px rgba(99, 102, 241, 0.35);
+}
+
+/* Glass panel */
+.glass-panel {
+  background: rgba(15, 20, 32, 0.75);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(34, 43, 64, 0.65);
+}
+
+/* Shimmer animation for pending async operations */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.animate-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04), transparent);
+  animation: shimmer 2s infinite;
+}

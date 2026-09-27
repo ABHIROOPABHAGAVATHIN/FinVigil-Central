@@ -1,13 +1,19 @@
 package com.finvigil.customer.service;
 
 import com.finvigil.common.enums.AuditAction;
+import com.finvigil.common.enums.CustomerStatus;
 import com.finvigil.customer.dto.CustomerCreateRequest;
+import com.finvigil.customer.dto.CustomerPageResponse;
 import com.finvigil.customer.dto.CustomerProfileResponse;
 import com.finvigil.customer.dto.CustomerResponse;
 import com.finvigil.customer.entity.Customer;
 import com.finvigil.customer.repository.CustomerRepository;
 import com.finvigil.exception.AppException;
 import com.finvigil.exception.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -238,6 +244,44 @@ public class CustomerService {
                 txnList,
                 amlInfo,
                 riskAggregation
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public CustomerPageResponse searchCustomers(String search, CustomerStatus status, int page, int size, String sortBy, String sortDir) {
+        int pageNumber = Math.max(0, page);
+        int pageSize = (size <= 0) ? 10 : Math.min(size, 100);
+
+        String validSortBy = switch (sortBy != null ? sortBy.toLowerCase() : "createdat") {
+            case "name" -> "name";
+            case "email" -> "email";
+            case "phone" -> "phone";
+            case "status" -> "status";
+            case "id" -> "id";
+            default -> "createdAt";
+        };
+
+        Sort.Direction direction = "ASC".equalsIgnoreCase(sortDir) ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(direction, validSortBy));
+
+        String sanitizedSearch = (search != null && !search.trim().isEmpty()) ? search.trim() : null;
+
+        Page<Customer> customerPage = customerRepository.searchCustomers(sanitizedSearch, status, pageable);
+        List<CustomerResponse> responses = customerPage.getContent().stream()
+                .map(this::mapToResponse)
+                .toList();
+
+        return new CustomerPageResponse(
+                responses,
+                customerPage.getNumber(),
+                customerPage.getSize(),
+                customerPage.getTotalElements(),
+                customerPage.getTotalPages(),
+                customerPage.isFirst(),
+                customerPage.isLast(),
+                customerPage.hasNext(),
+                customerPage.hasPrevious(),
+                customerPage.isEmpty()
         );
     }
 

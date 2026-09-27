@@ -62,6 +62,7 @@ Thumbs.db
 *.p12
 *.jks
 node_modules/
+*.tsbuildinfo
 .system_generated/
 
 # Logs

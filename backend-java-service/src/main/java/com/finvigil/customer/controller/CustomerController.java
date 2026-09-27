@@ -1,6 +1,8 @@
 package com.finvigil.customer.controller;
 
+import com.finvigil.common.enums.CustomerStatus;
 import com.finvigil.customer.dto.CustomerCreateRequest;
+import com.finvigil.customer.dto.CustomerPageResponse;
 import com.finvigil.customer.dto.CustomerProfileResponse;
 import com.finvigil.customer.dto.CustomerResponse;
 import com.finvigil.customer.service.CustomerService;
@@ -10,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,6 +25,21 @@ public class CustomerController {
 
     public CustomerController(CustomerService customerService) {
         this.customerService = customerService;
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    @Operation(summary = "List and search customers", description = "Paginated directory of customer entities with multi-field search and status filter. Restricted to employee access.")
+    public ResponseEntity<CustomerPageResponse> listCustomers(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) CustomerStatus status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "DESC") String sortDir
+    ) {
+        CustomerPageResponse response = customerService.searchCustomers(search, status, page, size, sortBy, sortDir);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
