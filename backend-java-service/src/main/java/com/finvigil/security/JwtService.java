@@ -31,6 +31,15 @@ public class JwtService {
     public String generateToken(String username, String customerUuid) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("customerUuid", customerUuid);
+        claims.put("userType", "CUSTOMER");
+        return generateToken(claims, username);
+    }
+
+    public String generateEmployeeToken(String username, String employeeUuid, com.finvigil.common.enums.EmployeeRole role) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("employeeUuid", employeeUuid);
+        claims.put("role", role != null ? role.name() : null);
+        claims.put("userType", "EMPLOYEE");
         return generateToken(claims, username);
     }
 
@@ -51,6 +60,19 @@ public class JwtService {
     public String extractCustomerUuid(String token) {
         return extractClaim(token, claims -> claims.get("customerUuid", String.class));
     }
+
+    public String extractEmployeeUuid(String token) {
+        return extractClaim(token, claims -> claims.get("employeeUuid", String.class));
+    }
+
+    public String extractRole(String token) {
+        return extractClaim(token, claims -> claims.get("role", String.class));
+    }
+
+    public String extractUserType(String token) {
+        return extractClaim(token, claims -> claims.get("userType", String.class));
+    }
+
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);

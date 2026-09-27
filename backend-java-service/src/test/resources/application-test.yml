@@ -28,3 +28,8 @@ app:
     velocity-window-seconds: 60
     rule-weight: 0.4
     ml-weight: 0.6
+  employee:
+    default-admin:
+      email: admin@finvigil.internal
+      password: TestAdminSecurePassword123!
+

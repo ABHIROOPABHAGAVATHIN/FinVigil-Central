@@ -41,6 +41,10 @@ app:
     velocity-window-seconds: ${AML_VELOCITY_WINDOW_SECONDS:60}
     rule-weight: ${AML_RULE_WEIGHT:0.4}
     ml-weight: ${AML_ML_WEIGHT:0.6}
+  employee:
+    default-admin:
+      email: ${DEFAULT_ADMIN_EMAIL:admin@finvigil.internal}
+      password: ${DEFAULT_ADMIN_PASSWORD:}
 
 management:
   endpoints:

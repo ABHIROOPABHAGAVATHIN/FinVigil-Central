@@ -43,9 +43,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             final String userEmail = jwtService.extractUsername(jwt);
             if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 if (jwtService.validateToken(jwt)) {
-                    List<SimpleGrantedAuthority> authorities = Collections.singletonList(
-                            new SimpleGrantedAuthority("ROLE_USER")
-                    );
+                    String userType = jwtService.extractUserType(jwt);
+                    String employeeRole = jwtService.extractRole(jwt);
+
+                    List<SimpleGrantedAuthority> authorities = new java.util.ArrayList<>();
+                    if ("EMPLOYEE".equalsIgnoreCase(userType) || employeeRole != null) {
+                        authorities.add(new SimpleGrantedAuthority("ROLE_EMPLOYEE"));
+                        if (employeeRole != null && !employeeRole.isBlank()) {
+                            authorities.add(new SimpleGrantedAuthority("ROLE_" + employeeRole.toUpperCase()));
+                        }
+                    } else {
+                        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+                        authorities.add(new SimpleGrantedAuthority("ROLE_CUSTOMER"));
+                    }
+
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userEmail,
                             null,
@@ -55,6 +66,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
+
         } catch (Exception ignored) {
             // Context will remain unauthenticated; SecurityFilterChain handles unauthorized access
         }

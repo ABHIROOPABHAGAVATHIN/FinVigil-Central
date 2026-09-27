@@ -44,7 +44,8 @@ import static org.junit.jupiter.api.Assertions.*;
         "spring.rabbitmq.host=localhost",
         "spring.rabbitmq.port=5672",
         "spring.data.redis.host=localhost",
-        "spring.data.redis.port=6379"
+        "spring.data.redis.port=6379",
+        "app.employee.default-admin.password=TestE2EAdminPass123!"
 })
 public class FinVigilFullSystemE2ETest {
 

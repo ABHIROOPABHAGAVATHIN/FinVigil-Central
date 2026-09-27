@@ -24,7 +24,8 @@ import static org.junit.jupiter.api.Assertions.*;
         "spring.datasource.password=finvigil_secure_password",
         "spring.datasource.driver-class-name=org.postgresql.Driver",
         "spring.jpa.hibernate.ddl-auto=update",
-        "spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect"
+        "spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect",
+        "app.employee.default-admin.password=TestE2EAdminPass123!"
 })
 public class AmlPostgresRealIngestionTest {
 
